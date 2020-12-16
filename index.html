@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>A Game of Murder in Moordoor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    <style>
+        @font-face {
+            font-family: MiddleEarth;
+            src: url(Middleearth-ao6m.ttf);
+        }
+
+        body {
+            background: #f5e3b8;
+            color: #222;
+            font-size: 24px;
+            font-style: normal;
+            font-variant: normal;
+            font-weight: 700;
+            line-height: 26.4px;
+            text-align: center;
+        }
+
+        body, select, input {
+            font-family: "Goudy Old Style", Garamond, "Big Caslon", "Times New Roman", serif;
+        }
+
+        h1, h2 {
+            font-family: MiddleEarth;
+        }
+
+        h2 {
+            font-size: 1.5em;
+        }
+
+        select,
+        input {
+            font-size: 1em;            
+        }
+
+        fieldset {
+            border: 0 solid transparent;
+        }
+
+        #welcome {
+            padding-top: 24px;
+            display: none;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        #error {
+            display: none;
+            color: #d22;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="login" action="javascript:void(0)">
+        <h1>Who's joining the party?</h1>
+        <fieldset>
+            <select id="character">
+                <option></option>
+            </select>
+            <h2>Game code</h2>
+            <input type="text" id="code" placeholder="Enter Code" maxlength="6"></input>
+            <p id="error"></p>
+            <input type="submit" value="Join"></input>
+        </fieldset>
+    </form>
+
+    <div id="welcome"></div>
+
+    <script>
+        const characters = [
+            { name: "Bernie", id: "bernie" },
+            { name: "Candida", id: "candida" },
+            { name: "Chastity", id: "chastity" },
+            { name: "Icy Deadpeeps", id: "icydeadpeeps" },
+            { name: "Jewel", id: "jewel" },
+            { name: "Legless", id: "legless" },
+            { name: "McSporran", id: "mcsporran" },
+            { name: "Shazam", id: "shazam" },
+            { name: "Sheena Proudlegs", id: "proudlegs" },
+            { name: "Sir Prancelot", id: "prancelot" },
+            { name: "The Black Knight", id: "blackknight" },
+            { name: "Thud", id: "thud" },
+        ];
+
+        function showCharacter(character, number) {
+            const status = number === characters.length ? "the murderer!" : "not the murderer.";
+            welcome.textContent = `Guest #${number}, you are ${status}`;
+            document.getElementById("welcome").style.display = "block";
+        }
+
+        window.addEventListener("DOMContentLoaded", e => {
+            const selector = document.getElementById("character");
+            const error = document.getElementById("error");
+
+            function showError(message) {
+                error.textContent = message;
+                error.style.display = "inline";
+            }
+
+            for (let character of characters) {
+                const option = document.createElement("option");
+                option.setAttribute("value", character.id);
+                option.textContent = character.name;
+                selector.appendChild(option);
+            }
+
+            document.getElementById("login").addEventListener("submit", e => {
+                e.preventDefault();
+                error.style.display = "none";
+
+                const character = characters.find(c => c.id === selector.value);
+                const code = document.getElementById("code").value.toLowerCase();
+
+                for (let i = 1; i <= characters.length; i++) {
+                    const hash = CryptoJS.SHA1(character.id + i).toString(CryptoJS.enc.Hex);
+                    if (hash.substring(0, 6) === code) {
+                        document.querySelector("fieldset").disabled = "disabled";
+                        showCharacter(character, i);
+                        return;
+                    }
+                }
+
+                showError();
+            });
+        });
+    </script>
+</body>
+
+</html>
