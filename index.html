@@ -70,7 +70,10 @@
         </fieldset>
     </form>
 
-    <div id="welcome"></div>
+    <div id="welcome">
+        <p id="guest"></p>
+        <p><a href="public/questions.pdf" target="_blank">Question Sheet</a></p>
+    </div>
 
     <script>
         const characters = [
@@ -90,7 +93,7 @@
 
         function showCharacter(character, number) {
             const status = number === characters.length ? "the murderer!" : "not the murderer.";
-            welcome.textContent = `Guest #${number}, you are ${status}`;
+            document.getElementById("guest").textContent = `Guest #${number}, you are ${status}`;
             document.getElementById("welcome").style.display = "block";
         }
 
